@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package bidirectional;
+
+option java_package = "com.example.proto.bidirectional";
+
+message BidirectionalStreamingRequest {
+    string name = 1;
+    int32 index = 2;
+}
+
+message BidirectionalStreamingResponse {
+    string name = 1;
+    int32 indexedValue = 2;
+}
+
+service BidirectionalStreamingService {
+    rpc bidirectionalStreamingMethod(stream BidirectionalStreamingRequest) returns (stream BidirectionalStreamingResponse);
+}

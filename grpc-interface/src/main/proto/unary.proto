@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+// The package name is uses for define the package name for the generated Java code
+package unary;
+
+// Options uses for Java code generation directives
+// java_package: The package name for the generated Java code
+// java_multiple_files: If true, generates each top-level message type in a separate .java file
+option java_package = "com.example.proto.unary";
+option java_multiple_files = true;
+
+// The message object uses for define model object
+message UnaryRequest {
+    // The field name is the same as the Java field name
+    // dummyField have to be string. 1 means the field number. It is unique in the message.
+    // Protocol sends the fields without field name. Because of that system understand the field by field number.
+    string name = 1;
+}
+
+message UnaryResponse {
+    // The field name is the same as the Java field name
+    string name = 1;
+    int32 scopedBeanCounter = 2;
+    int32 defaultBeanCounter = 3;
+}
+
+// The service name is the same as the Java class name but it uses for define service like spring rest controller
+service UnaryService {
+    // The method name is the same as the Java method name
+    rpc dummyMethod(UnaryRequest) returns (UnaryResponse);
+}

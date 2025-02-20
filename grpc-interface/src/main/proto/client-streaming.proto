@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package clientstreaming;
+
+option java_package = "com.example.proto.clientstreaming";
+
+message ClientStreamingRequest {
+    string name = 1;
+    int32 index = 2;
+}
+
+message ClientStreamingResponse {
+    string name = 1;
+    int32 indexedValue = 2;
+}
+
+service ClientStreamingService {
+    rpc clientStreamingMethod(stream ClientStreamingRequest) returns (ClientStreamingResponse);
+}

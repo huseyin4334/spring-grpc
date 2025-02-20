@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package serverstreaming;
+
+option java_package = "com.example.proto.serverstreaming";
+
+message ServerStreamingRequest {
+    string name = 1;
+    int32 index = 2;
+}
+
+message NestedMessage {
+    string nestedName = 1;
+}
+
+message ServerStreamingResponse {
+    string name = 1;
+    int32 indexedValue = 2;
+    map<int64, string> matches = 3;
+    NestedMessage nestedMessage = 4;
+    repeated string messages = 5;
+}
+
+service ServerStreamingService {
+    rpc serverStreamingMethod(ServerStreamingRequest) returns (stream ServerStreamingResponse);
+}
