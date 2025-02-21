@@ -4,14 +4,22 @@ import com.example.proto.bidirectional.BidirectionalStreaming;
 import com.example.proto.bidirectional.BidirectionalStreamingServiceGrpc;
 import com.example.proto.clientstreaming.ClientStreaming;
 import com.example.proto.clientstreaming.ClientStreamingServiceGrpc;
+import com.example.proto.deadline.DeadlineRequest;
+import com.example.proto.deadline.DeadlineResponse;
+import com.example.proto.deadline.DeadlineServiceGrpc;
 import com.example.proto.serverstreaming.ServerStreaming;
 import com.example.proto.serverstreaming.ServerStreamingServiceGrpc;
 import com.example.proto.unary.UnaryResponse;
 import com.example.proto.unary.UnaryServiceGrpc;
+import io.grpc.Deadline;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,6 +30,7 @@ public class ClientService {
     private final ServerStreamingServiceGrpc.ServerStreamingServiceStub serverStreamingServiceBlockingStub;
     private final BidirectionalStreamingServiceGrpc.BidirectionalStreamingServiceStub bidirectionalStreamingServiceBlockingStub;
     private final ClientStreamingServiceGrpc.ClientStreamingServiceStub clientStreamingServiceBlockingStub;
+    private final DeadlineServiceGrpc.DeadlineServiceBlockingStub deadlineServiceBlockingStub;
 
     public void callUnaryService(String name) {
         try {
@@ -139,6 +148,36 @@ public class ClientService {
         // When we are done with sending requests, we need to call onCompleted to close the stream
         // Server will continue to send responses until it calls onCompleted
         requestObserver.onCompleted();
+    }
+
+    public void callDeadlineService(String name) {
+        try {
+            log.info("Calling deadline service");
+
+            DeadlineResponse response = deadlineServiceBlockingStub
+                    .withDeadline(Deadline.after(2, TimeUnit.SECONDS)) // If the response is not received within 2 seconds, it will throw a DEADLINE_EXCEEDED error
+                    .deadlineMethod(
+                            DeadlineRequest.newBuilder()
+                                    .setName(name)
+                                    .build()
+                    );
+
+            log.info("Response from server: {}", response.getName());
+        } catch (StatusRuntimeException e) {
+            if (e.getStatus().getCode() == Status.Code.DEADLINE_EXCEEDED)
+                log.error("Deadline exceeded", e);
+            else
+                log.error("Error occurred", e);
+        }
+
+        DeadlineResponse response = deadlineServiceBlockingStub.withDeadline(Deadline.after(5, TimeUnit.SECONDS))
+                .deadlineMethod(
+                        DeadlineRequest.newBuilder()
+                                .setName(name)
+                                .build()
+                );
+
+        log.info("Response second request from server: {}. This request hasn't been exceeded", response.getName());
     }
 
 

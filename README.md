@@ -79,3 +79,20 @@ Interceptors to provide authentication, logging, monitoring, etc. They are come 
 | Streaming        | Unary                  |
 | Bidirectional    | Client to Server       |
 | Free Design      | GET/POST/UPDATE/DELETE |
+
+
+# Deadlines in gRPC
+Deadlines are a way to tell a server how much time it has to process a request.
+If the deadline is exceeded, the server can cancel the request and return an error to the client.
+Deadlines are propagated across gRPC calls.
+
+
+# TLS in gRPC
+gRPC has built-in support for TLS encryption.
+TLS is the successor to SSL.
+We can also use self-signed certificates for development.
+
+Server needs `server.crt` and `server.pem` files. (We will use `openssl` to create them)
+- `server.crt` is the public key.
+- `server.pem` is the private key.
+Client needs `ca.crt` file.

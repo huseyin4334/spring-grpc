@@ -2,6 +2,7 @@ package org.example.grpcclient.config;
 
 import com.example.proto.bidirectional.BidirectionalStreamingServiceGrpc;
 import com.example.proto.clientstreaming.ClientStreamingServiceGrpc;
+import com.example.proto.deadline.DeadlineServiceGrpc;
 import com.example.proto.serverstreaming.ServerStreamingServiceGrpc;
 import com.example.proto.unary.UnaryServiceGrpc;
 import io.grpc.Channel;
@@ -39,6 +40,11 @@ public class StubConfig {
     @Bean
     public BidirectionalStreamingServiceGrpc.BidirectionalStreamingServiceStub bidirectionalStreamingServiceBlockingStub(Channel channel) {
         return BidirectionalStreamingServiceGrpc.newStub(channel);
+    }
+
+    @Bean
+    public DeadlineServiceGrpc.DeadlineServiceBlockingStub deadlineServiceBlockingStub(Channel channel) {
+        return DeadlineServiceGrpc.newBlockingStub(channel);
     }
 
 }

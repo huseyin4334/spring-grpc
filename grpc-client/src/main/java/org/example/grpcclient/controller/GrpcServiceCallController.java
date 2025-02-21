@@ -41,4 +41,9 @@ public class GrpcServiceCallController {
     ) {
         clientService.bidirectionalStreamingService(name, index);
     }
+
+    @GetMapping("/deadline")
+    public void deadline(@RequestParam String name) {
+        clientService.callDeadlineService(name);
+    }
 }
